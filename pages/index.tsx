@@ -40,7 +40,7 @@ const EditTask = () => {
   return (
     <div>
       <h1 className="updateTitle">Update Task {id}</h1>
-      {taskData && <FormTask initialData={taskData} onSubmit={handleSubmit} />}
+      <FormTask initialData={taskData} onSubmit={handleSubmit} />
     </div>
   );
 };
