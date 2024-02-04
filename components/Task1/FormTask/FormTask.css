@@ -1,0 +1,42 @@
+.form-task {
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: #000;
+}
+
+.form-task label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-task input[type="text"],
+.form-task input[type="checkbox"] {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 20px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.form-task .dropzone {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.form-task button {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.form-task button:hover {
+  background-color: #45a049;
+}
