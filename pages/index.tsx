@@ -1,51 +1,48 @@
-import { GlobalContext } from "@/components/GlobalContext";
-import { FormTask } from "@/components/Task1/FormTask";
+import { FormTask, TaskDataProps } from "@/components/Task1/FormTask";
 import axios from "axios";
-import { format } from "date-fns"; // fix import
-import router from "next/router";
-import { useContext, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-export default function Home() {
-  const [taskData, setTaskData] = useState(null);
-  const { formData, setFormData } = useContext(GlobalContext);
-  const [name, setName] = useState(formData?.name || "");
-  const [birthdate, setBirthdate] = useState<Date>(new Date());
-  const [profilePicture, setProfilePicture] = useState<File | null>(null);
-  const [activeStatus, setActiveStatus] = useState(
-    formData?.activeStatus || false
-  );
-  const [editorContent, setEditorContent] = useState("");
+const EditTask = () => {
+  const router = useRouter();
+  const { id } = router.query;
+  const [taskData, setTaskData] = useState<TaskDataProps | null>(null);
 
-  const handleSubmit = async () => {
-    try {
-      const formattedDate = format(birthdate, "yyyy-MM-dd");
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("birthdate", formattedDate);
-      if (profilePicture) {
-        formData.append("profile_picture", profilePicture);
+  useEffect(() => {
+    const fetchTaskData = async () => {
+      try {
+        const response = await axios.get<TaskDataProps>(
+          `https://tasks.vitasoftsolutions.com/userdata/${id}`
+        );
+        setTaskData(response.data);
+      } catch (error) {
+        console.error("Error fetching task data:", error);
       }
-      formData.append("active_status", activeStatus.toString());
-      formData.append("editor_content", editorContent);
+    };
 
-      const response = await axios.post(
-        "https://tasks.vitasoftsolutions.com/userdata/",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+    if (id) {
+      fetchTaskData();
+    }
+  }, [id]);
+
+  const handleSubmit = async (updatedData: TaskDataProps) => {
+    try {
+      await axios.put(
+        `https://tasks.vitasoftsolutions.com/userdata/${id}`,
+        updatedData
       );
-      console.log(response.data);
-      router.push("/tasks");
+      router.push("/tasks/edit");
     } catch (error) {
-      console.error(error);
+      console.error("Error updating task:", error);
     }
   };
+
   return (
-    <>
-      <FormTask initialData={taskData} onSubmit={handleSubmit} />
-    </>
+    <div>
+      <h1 className="updateTitle">Update Task {id}</h1>
+      {taskData && <FormTask initialData={taskData} onSubmit={handleSubmit} />}
+    </div>
   );
-}
+};
+
+export default EditTask;
